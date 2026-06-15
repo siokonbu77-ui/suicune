@@ -10,6 +10,30 @@ resizeCanvas();
 
 window.addEventListener("resize", resizeCanvas);
 
+// タッチ位置
+let touchX = null;
+
+// タッチ開始
+canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+
+    const rect = canvas.getBoundingClientRect();
+    touchX = e.touches[0].clientX - rect.left;
+});
+
+// タッチ移動
+canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+
+    const rect = canvas.getBoundingClientRect();
+    touchX = e.touches[0].clientX - rect.left;
+});
+
+// タッチ終了
+canvas.addEventListener("touchend", () => {
+    touchX = null;
+});
+
 // プレイヤー
 const player = {
     x: 190,
@@ -186,6 +210,11 @@ function update() {
     if (keys["ArrowUp"]) player.y -= player.speed;
     if (keys["ArrowDown"]) player.y += player.speed;
 
+    // スマホ操作
+if (touchX !== null) {
+    player.x = touchX - player.width / 2;
+}
+
     // 画面外に出ない
     if (player.x < 0) player.x = 0;
     if (player.x > canvas.width - player.width)
@@ -195,6 +224,10 @@ function update() {
     if (player.y > canvas.height - player.height)
         player.y = canvas.height - player.height;
 
+    player.x = Math.max(
+    0,
+    Math.min(canvas.width - player.width, player.x)
+);
     // 弾移動
 bullets.forEach(bullet => {
     bullet.x += bullet.vx || 0;
