@@ -12,13 +12,17 @@ window.addEventListener("resize", resizeCanvas);
 
 // タッチ位置
 let touchX = null;
+let touchY = null;
+
 
 // タッチ開始
 canvas.addEventListener("touchstart", (e) => {
     e.preventDefault();
 
     const rect = canvas.getBoundingClientRect();
+
     touchX = e.touches[0].clientX - rect.left;
+    touchY = e.touches[0].clientY - rect.top;
 });
 
 // タッチ移動
@@ -26,18 +30,21 @@ canvas.addEventListener("touchmove", (e) => {
     e.preventDefault();
 
     const rect = canvas.getBoundingClientRect();
+
     touchX = e.touches[0].clientX - rect.left;
+    touchY = e.touches[0].clientY - rect.top;
 });
 
 // タッチ終了
 canvas.addEventListener("touchend", () => {
     touchX = null;
+    touchY = null;
 });
 
 // プレイヤー
 const player = {
-    x: 190,
-    y: 550,
+    x: canvas.width / 2 - 50,
+    y: canvas.height - 150,
     width: 100,
     height: 100,
     speed: 5
@@ -212,7 +219,10 @@ function update() {
 
     // スマホ操作
 if (touchX !== null) {
+
     player.x = touchX - player.width / 2;
+    player.y = touchY - player.height / 2;
+
 }
 
     // 画面外に出ない
@@ -399,15 +409,17 @@ enemyBullets.forEach(bullet => {
     ctx.fillText("LIFE : " + life, 10, 60);
     // ゲームオーバー表示
     if (life <= 0) {
-        ctx.fillStyle = "red";
-        ctx.font = "48px Arial";
-        
-        ctx.fillText(
-            "GAME OVER",
-            100,
-            320
-        );
-    }
+
+    ctx.fillStyle = "red";
+    ctx.font = "48px Arial";
+    ctx.textAlign = "center";
+
+    ctx.fillText(
+        "GAME OVER",
+        canvas.width / 2,
+        canvas.height / 2
+    );
+}
 
 }
 
